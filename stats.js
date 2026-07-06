@@ -26,8 +26,6 @@ function renderStats() {
   }
 }
 
-}
-
 /* ---- Helpers de fecha ---- */
 function movsDeMes(mes) {
   return STORE.data.historial.filter(m => monthKey(m.fecha) === mes);
