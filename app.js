@@ -189,6 +189,8 @@ function renderDashboard() {
   renderCharts(d, d.movs, mesSeleccionado, categoriasActivas());
 }
 
+let categoriasAbiertas = new Set();
+
 function renderResumen(d) {
   const cont = document.getElementById('resumen-body');
   if (!cont) return;
@@ -204,9 +206,24 @@ function renderResumen(d) {
     const nivel = sinPresu ? (gastado > 0 ? 'over' : 'ok') : (pct > 100 ? 'over' : (pct >= 75 ? 'warn' : 'ok'));
     const w = sinPresu ? (gastado > 0 ? 100 : 0) : Math.min(pct, 100);
     const pctTxt = sinPresu ? (gastado > 0 ? 'sin presupuesto' : '—') : pct.toFixed(0) + '%';
+    const abierta = categoriasAbiertas.has(c.nombre);
+
+    const movsCat = (d.movs || [])
+      .filter(m => m.categoria === c.nombre)
+      .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+
+    const detalle = abierta ? `
+      <div class="res-detail">
+        ${movsCat.length ? movsCat.map(m => `
+          <div class="res-mini-row">
+            <span class="res-mini-main"><strong>${escapeHtml(m.descripcion)}</strong> <span class="res-mini-sub">· ${formatDate(m.fecha)} · ${escapeHtml(m.tarjeta || '')}</span></span>
+            <span class="res-mini-monto">${formatMoney(m.monto)}</span>
+          </div>`).join('') : '<p class="placeholder" style="margin-top:8px;">Sin gastos este mes.</p>'}
+      </div>` : '';
+
     return `
       <div class="res-row">
-        <div class="res-head">
+        <div class="res-head res-head-click" data-cat-toggle="${escapeHtml(c.nombre)}">
           <span class="res-cat">${(c.emoji || '')} ${c.nombre}</span>
           <span class="res-nums">${formatMoney(gastado)} <span class="res-sep">/</span> ${formatMoney(presu)}</span>
         </div>
@@ -215,8 +232,17 @@ function renderResumen(d) {
           <span class="${disp < 0 ? 'neg' : ''}">Disponible ${formatMoney(disp)}</span>
           <span>${pctTxt}</span>
         </div>
+        ${detalle}
       </div>`;
   }).join('');
+
+  cont.querySelectorAll('[data-cat-toggle]').forEach(h => {
+    h.addEventListener('click', () => {
+      const cat = h.dataset.catToggle;
+      if (categoriasAbiertas.has(cat)) categoriasAbiertas.delete(cat); else categoriasAbiertas.add(cat);
+      renderResumen(computeDashboard(mesSeleccionado));
+    });
+  });
 }
 
 /* ================= HISTORIAL ================= */
