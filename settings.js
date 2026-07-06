@@ -1,8 +1,8 @@
 // settings.js — Lógica de Configuración: ingreso, presupuestos y tema de colores.
 
 const THEME_KEY = 'presupuesto_theme_v1';
-const TEMA_OSCURO = { '--bg': '#0b0b0f', '--card': '#16161d', '--text': '#f5f5f7', '--accent': '#6366f1' };
-const TEMA_CLARO  = { '--bg': '#f2f2f5', '--card': '#ffffff', '--text': '#111116', '--accent': '#6366f1' };
+const TEMA_OSCURO = { '--bg': '#0b0b0f', '--card': '#16161d', '--text': '#f5f5f7', '--muted': '#9a9aa5', '--accent': '#6366f1' };
+const TEMA_CLARO  = { '--bg': '#f2f2f5', '--card': '#ffffff', '--text': '#111116', '--muted': '#6b6b75', '--accent': '#6366f1' };
 
 function setupSettings() {
   const btnIngreso = document.getElementById('cfg-guardar-ingreso');
@@ -37,7 +37,7 @@ function renderSettings() {
       </label>`).join('');
   }
 
-  ['--bg', '--card', '--text', '--accent'].forEach(v => {
+  ['--bg', '--card', '--text', '--muted', '--accent'].forEach(v => {
     const inp = document.querySelector(`.color-picker[data-var="${v}"]`);
     if (!inp) return;
     const actual = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -100,7 +100,7 @@ function onColorChange(e) {
 }
 function guardarTemaActual() {
   const vars = {};
-  ['--bg', '--card', '--text', '--accent'].forEach(v => {
+  ['--bg', '--card', '--text', '--muted', '--accent'].forEach(v => {
     vars[v] = getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   });
   try { localStorage.setItem(THEME_KEY, JSON.stringify(vars)); } catch (e) {}
