@@ -23,3 +23,5 @@ function crearMovimiento(mov)      { return apiPost('create',    { movimiento: m
 function actualizarMovimiento(mov) { return apiPost('update',    { movimiento: mov }); }
 function eliminarMovimiento(id)    { return apiPost('delete',    { id }); }
 function duplicarMovimiento(id)    { return apiPost('duplicate', { id }); }
+function actualizarConfig(clave, valor) { return apiPost('update_config', { clave, valor }); }
+function actualizarPresupuesto(categoria, presupuesto) { return apiPost('update_presupuesto', { categoria, presupuesto }); }

@@ -6,9 +6,11 @@ let editandoId = null;
 
 async function init() {
   const status = document.getElementById('status');
-  setupTabs();
+    setupTabs();
   setupForm();
   setupHistorial();
+  setupSettings();
+
   if (loadCache()) render();
   try {
     status.textContent = 'Conectando…';
@@ -28,7 +30,10 @@ function render() {
   renderDashboard();
   poblarFiltrosHistorial();
   renderHistorial();
+  renderSettings();
 }
+
+
 
 /* ---------- Navegación ---------- */
 function setupTabs() {

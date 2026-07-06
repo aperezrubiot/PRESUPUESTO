@@ -245,3 +245,14 @@ body {
 .bar-track { flex: 1; height: 10px; background: var(--surface); border-radius: 6px; overflow: hidden; }
 .bar-fill { height: 100%; background: var(--accent); border-radius: 6px; transition: width .4s ease; }
 .bar-value { width: 90px; text-align: right; font-size: .85rem; font-weight: 600; flex-shrink: 0; }
+
+/* Configuración */
+.theme-presets { display: flex; gap: 10px; margin-bottom: 16px; }
+.color-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 14px; margin-bottom: 16px;
+}
+input[type="color"] {
+  width: 100%; height: 44px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--surface); padding: 4px; cursor: pointer;
+}

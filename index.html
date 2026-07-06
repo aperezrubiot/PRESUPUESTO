@@ -153,9 +153,54 @@
 
 
 
-    <section id="view-configuracion" class="view">
-      <p class="placeholder">Aquí irá la configuración (Etapa 4.7).</p>
+        <section id="view-configuracion" class="view">
+
+      <div class="card">
+        <h3 class="card-title">Ingreso mensual</h3>
+        <div class="form-grid">
+          <label class="field">
+            <span>Monto</span>
+            <input type="number" id="cfg-ingreso" inputmode="decimal">
+          </label>
+        </div>
+        <button id="cfg-guardar-ingreso" class="btn-primary">Guardar</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Presupuesto por categoría</h3>
+        <div id="cfg-presupuestos-body" class="form-grid"></div>
+        <button id="cfg-guardar-presupuestos" class="btn-primary">Guardar presupuestos</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Apariencia</h3>
+        <div class="theme-presets">
+          <button class="btn-secondary" data-theme-preset="oscuro">🌙 Oscuro</button>
+          <button class="btn-secondary" data-theme-preset="claro">☀️ Claro</button>
+        </div>
+        <div class="color-grid">
+          <label class="field">
+            <span>Fondo</span>
+            <input type="color" class="color-picker" data-var="--bg">
+          </label>
+          <label class="field">
+            <span>Bloques / tarjetas</span>
+            <input type="color" class="color-picker" data-var="--card">
+          </label>
+          <label class="field">
+            <span>Texto</span>
+            <input type="color" class="color-picker" data-var="--text">
+          </label>
+          <label class="field">
+            <span>Acento</span>
+            <input type="color" class="color-picker" data-var="--accent">
+          </label>
+        </div>
+        <button id="cfg-reset-tema" class="btn-ghost">Restablecer colores</button>
+      </div>
+
     </section>
+
 
   </main>
 
@@ -167,8 +212,10 @@
   <script src="storage.js"></script>
   <script src="api.js"></script>
     <script src="charts.js"></script>
-  <script src="stats.js"></script>
+    <script src="stats.js"></script>
+  <script src="settings.js"></script>
   <script src="app.js"></script>
+
 
 </body>
 </html>
