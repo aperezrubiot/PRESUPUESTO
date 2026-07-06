@@ -87,11 +87,13 @@ async function onGuardar() {
     document.getElementById('f-desc').value = '';
     document.getElementById('f-monto').value = '';
     document.getElementById('f-notas').value = '';
-    mesSeleccionado = monthKey(mov.fecha);
+        mesSeleccionado = monthKey(mov.fecha);
     poblarSelectorMes();
+    poblarFiltrosHistorial();
     renderDashboard();
     renderHistorial();
     toast('Gasto guardado ✅');
+
   } catch (e) {
     toast('Error: ' + e.message);
   } finally {
@@ -229,7 +231,15 @@ function setupHistorial() {
 function poblarFiltrosHistorial() {
   const cat = document.getElementById('h-cat');
   const tar = document.getElementById('h-tar');
+  const lista = document.getElementById('h-buscar-list');
+  if (lista) {
+    const descripciones = Array.from(new Set(
+      STORE.data.historial.map(m => m.descripcion).filter(Boolean)
+    )).sort();
+    lista.innerHTML = descripciones.map(d => `<option value="${escapeHtml(d)}"></option>`).join('');
+  }
   if (!cat || !tar) return;
+
   const cats = categoriasActivas();
   cat.innerHTML = '<option value="">Todas</option>' +
     cats.map(c => `<option value="${c.nombre}">${(c.emoji || '')} ${c.nombre}</option>`).join('');

@@ -105,10 +105,12 @@
 
       <div class="card filtros-card">
         <div class="filtros-grid">
-          <label class="field field-wide">
+                    <label class="field field-wide">
             <span>Buscar</span>
-            <input type="text" id="h-buscar" placeholder="Descripción o notas…">
+            <input type="text" id="h-buscar" list="h-buscar-list" placeholder="Escribe o elige de la lista…">
+            <datalist id="h-buscar-list"></datalist>
           </label>
+
           <label class="field">
             <span>Categoría</span>
             <select id="h-cat"><option value="">Todas</option></select>
