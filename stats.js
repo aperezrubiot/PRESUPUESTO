@@ -4,21 +4,28 @@ function renderStats() {
   const cont = document.getElementById('stats-body');
   if (!cont) return;
 
-  const historial = STORE.data.historial;
-  if (!historial.length) {
-    cont.innerHTML = '<p class="placeholder">Aún no hay movimientos para analizar.</p>';
-    return;
-  }
+  try {
+    const historial = STORE.data.historial;
+    if (!historial.length) {
+      cont.innerHTML = '<p class="placeholder">Aún no hay movimientos para analizar.</p>';
+      return;
+    }
 
-  const mesActual = mesSeleccionado || getMesesDisponibles()[0];
-  cont.innerHTML =
-    bloquePronostico(mesActual) +
-    bloqueComparacion(mesActual) +
-    bloquePromedios(mesActual) +
-    bloqueGastoPorMes() +
-    bloqueTarjetas(mesActual) +
-    bloqueTopCompras(mesActual) +
-    bloqueTopCategorias(mesActual);
+    const mesActual = mesSeleccionado || getMesesDisponibles()[0];
+    cont.innerHTML =
+      bloquePronostico(mesActual) +
+      bloqueComparacion(mesActual) +
+      bloquePromedios(mesActual) +
+      bloqueGastoPorMes() +
+      bloqueTarjetas(mesActual) +
+      bloqueTopCompras(mesActual) +
+      bloqueTopCategorias(mesActual);
+  } catch (e) {
+    cont.innerHTML = '<p class="placeholder">Error en estadísticas: ' + e.message + '</p>';
+    console.error(e);
+  }
+}
+
 }
 
 /* ---- Helpers de fecha ---- */
