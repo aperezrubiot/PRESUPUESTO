@@ -9,9 +9,11 @@ async function init() {
     setupTabs();
   setupForm();
   setupHistorial();
-  setupSettings();
+    setupSettings();
+  setupExport();
 
   if (loadCache()) render();
+
   try {
     status.textContent = 'Conectando…';
     const data = await apiGet();

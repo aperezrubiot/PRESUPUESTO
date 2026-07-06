@@ -196,25 +196,51 @@
             <input type="color" class="color-picker" data-var="--accent">
           </label>
         </div>
-        <button id="cfg-reset-tema" class="btn-ghost">Restablecer colores</button>
+                <button id="cfg-reset-tema" class="btn-ghost">Restablecer colores</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Exportar datos</h3>
+        <p class="stat-nota">Incluye el historial completo y el resumen del mes actual (KPIs y presupuestos).</p>
+        <div class="export-actions">
+          <button id="exp-excel" class="btn-secondary">📊 Excel</button>
+          <button id="exp-csv" class="btn-secondary">📄 CSV</button>
+          <button id="exp-json" class="btn-secondary">🧾 JSON</button>
+          <button id="exp-pdf" class="btn-secondary">📕 PDF</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Importar movimientos</h3>
+        <p class="stat-nota">Acepta Excel (.xlsx), CSV o JSON exportados desde esta misma app.</p>
+        <input type="file" id="imp-file" accept=".xlsx,.csv,.json">
+        <button id="imp-guardar" class="btn-primary" style="margin-top:12px;">Importar</button>
+        <p id="imp-status" class="stat-nota"></p>
       </div>
 
     </section>
+
 
 
   </main>
 
     <div id="toast" class="toast"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
   <script src="config.js"></script>
   <script src="utils.js"></script>
   <script src="storage.js"></script>
   <script src="api.js"></script>
     <script src="charts.js"></script>
     <script src="stats.js"></script>
-  <script src="settings.js"></script>
+    <script src="settings.js"></script>
+  <script src="export.js"></script>
   <script src="app.js"></script>
+
 
 
 </body>
