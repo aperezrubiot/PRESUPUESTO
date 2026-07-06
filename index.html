@@ -9,8 +9,19 @@
 <body>
   <main class="app">
     <h1>Presupuesto Familiar</h1>
-    <p>Si ves esto en tu URL de GitHub Pages, la Etapa 1 está lista. 🎉</p>
+    <p id="status" class="status">Cargando…</p>
+    <div class="grid">
+      <div class="kpi"><span id="ingreso">—</span><small>Ingreso mensual</small></div>
+      <div class="kpi"><span id="nmov">—</span><small>Movimientos</small></div>
+      <div class="kpi"><span id="ncat">—</span><small>Categorías</small></div>
+      <div class="kpi"><span id="ntar">—</span><small>Tarjetas</small></div>
+    </div>
   </main>
+
+  <script src="config.js"></script>
+  <script src="utils.js"></script>
+  <script src="storage.js"></script>
+  <script src="api.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
