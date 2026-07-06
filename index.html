@@ -7,15 +7,46 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <h1>Presupuesto Familiar</h1>
-    <p id="status" class="status">Cargando…</p>
-    <div class="grid">
-      <div class="kpi"><span id="ingreso">—</span><small>Ingreso mensual</small></div>
-      <div class="kpi"><span id="nmov">—</span><small>Movimientos</small></div>
-      <div class="kpi"><span id="ncat">—</span><small>Categorías</small></div>
-      <div class="kpi"><span id="ntar">—</span><small>Tarjetas</small></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Presupuesto</span>
     </div>
+    <span id="status" class="status">Cargando…</span>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="dashboard">Dashboard</button>
+    <button class="tab" data-tab="historial">Historial</button>
+    <button class="tab" data-tab="estadisticas">Estadísticas</button>
+    <button class="tab" data-tab="configuracion">Configuración</button>
+  </nav>
+
+  <main class="app">
+
+    <section id="view-dashboard" class="view active">
+      <div class="grid">
+        <div class="kpi"><span id="ingreso">—</span><small>Ingreso mensual</small></div>
+        <div class="kpi"><span id="nmov">—</span><small>Movimientos</small></div>
+        <div class="kpi"><span id="ncat">—</span><small>Categorías</small></div>
+        <div class="kpi"><span id="ntar">—</span><small>Tarjetas</small></div>
+      </div>
+      <p class="placeholder">Aquí irá el formulario de gastos y el resumen (Etapa 4.3).</p>
+    </section>
+
+    <section id="view-historial" class="view">
+      <p class="placeholder">Aquí irá el historial de movimientos (Etapa 4.5).</p>
+    </section>
+
+    <section id="view-estadisticas" class="view">
+      <p class="placeholder">Aquí irán las estadísticas (Etapa 4.6).</p>
+    </section>
+
+    <section id="view-configuracion" class="view">
+      <p class="placeholder">Aquí irá la configuración (Etapa 4.7).</p>
+    </section>
+
   </main>
 
   <script src="config.js"></script>
