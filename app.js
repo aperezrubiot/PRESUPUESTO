@@ -147,7 +147,7 @@ function computeDashboard(mes) {
   let topCat = '—', topVal = 0;
   for (const c in porCat) if (porCat[c] > topVal) { topVal = porCat[c]; topCat = c; }
 
-  return { totalGastado, ingreso, disponible, pct, numCompras, promCompra, promDiario, porCat, topCat, topVal };
+  return { totalGastado, ingreso, disponible, pct, numCompras, promCompra, promDiario, porCat, topCat, topVal, movs };
 }
 
 /* ---------- Render Dashboard ---------- */
@@ -168,6 +168,7 @@ function renderDashboard() {
   setText('kpi-topcat', d.topVal > 0 ? d.topCat : '—');
 
   renderResumen(d);
+  renderCharts(d, d.movs, mesSeleccionado, categoriasActivas());
 }
 
 function renderResumen(d) {

@@ -1,5 +1,4 @@
-<!DOCTYPE html><!-- redeploy -->
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -28,13 +27,11 @@
 
     <section id="view-dashboard" class="view active">
 
-      <!-- Selector de mes -->
       <div class="row-between">
         <h2 class="section-title">Resumen del mes</h2>
         <select id="mes-selector" class="select-mes"></select>
       </div>
 
-      <!-- Formulario de gasto -->
       <div class="card form-card">
         <h3 class="card-title">Registrar gasto</h3>
         <div class="form-grid">
@@ -66,7 +63,6 @@
         <button id="f-guardar" class="btn-primary">Guardar</button>
       </div>
 
-      <!-- KPIs -->
       <div class="grid">
         <div class="kpi"><span id="kpi-ingreso">—</span><small>Ingreso mensual</small></div>
         <div class="kpi"><span id="kpi-gastado">—</span><small>Total gastado</small></div>
@@ -78,7 +74,26 @@
         <div class="kpi"><span id="kpi-topcat" class="kpi-sm">—</span><small>Mayor gasto</small></div>
       </div>
 
-      <!-- Resumen por categoría -->
+      <!-- Gráficas -->
+      <div class="charts-grid">
+        <div class="card chart-card">
+          <h3 class="card-title">Distribución por categoría</h3>
+          <div class="chart-box"><canvas id="chart-dona"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <h3 class="card-title">Presupuesto vs. gastado</h3>
+          <div class="chart-box"><canvas id="chart-barras"></canvas></div>
+        </div>
+        <div class="card chart-card chart-wide">
+          <h3 class="card-title">Evolución del gasto en el mes</h3>
+          <div class="chart-box"><canvas id="chart-linea"></canvas></div>
+        </div>
+        <div class="card chart-card chart-wide">
+          <h3 class="card-title">Categorías: mayor a menor gasto</h3>
+          <div class="chart-box chart-box-tall"><canvas id="chart-horizontal"></canvas></div>
+        </div>
+      </div>
+
       <div class="card">
         <h3 class="card-title">Por categoría</h3>
         <div id="resumen-body"></div>
@@ -102,10 +117,12 @@
 
   <div id="toast" class="toast"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="config.js"></script>
   <script src="utils.js"></script>
   <script src="storage.js"></script>
   <script src="api.js"></script>
+  <script src="charts.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

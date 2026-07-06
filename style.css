@@ -139,3 +139,16 @@ body {
   transition: opacity .2s, transform .2s; z-index: 50;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Gráficas */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.chart-card { display: flex; flex-direction: column; }
+.chart-wide { grid-column: 1 / -1; }
+.chart-box { position: relative; height: 240px; }
+.chart-box-tall { height: 280px; }
+
