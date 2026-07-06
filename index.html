@@ -26,13 +26,63 @@
   <main class="app">
 
     <section id="view-dashboard" class="view active">
-      <div class="grid">
-        <div class="kpi"><span id="ingreso">—</span><small>Ingreso mensual</small></div>
-        <div class="kpi"><span id="nmov">—</span><small>Movimientos</small></div>
-        <div class="kpi"><span id="ncat">—</span><small>Categorías</small></div>
-        <div class="kpi"><span id="ntar">—</span><small>Tarjetas</small></div>
+
+      <!-- Selector de mes -->
+      <div class="row-between">
+        <h2 class="section-title">Resumen del mes</h2>
+        <select id="mes-selector" class="select-mes"></select>
       </div>
-      <p class="placeholder">Aquí irá el formulario de gastos y el resumen (Etapa 4.3).</p>
+
+      <!-- Formulario de gasto -->
+      <div class="card form-card">
+        <h3 class="card-title">Registrar gasto</h3>
+        <div class="form-grid">
+          <label class="field">
+            <span>Fecha</span>
+            <input type="date" id="f-fecha">
+          </label>
+          <label class="field field-wide">
+            <span>Descripción</span>
+            <input type="text" id="f-desc" placeholder="Ej. Súper semanal">
+          </label>
+          <label class="field">
+            <span>Categoría</span>
+            <select id="f-cat"></select>
+          </label>
+          <label class="field">
+            <span>Monto</span>
+            <input type="number" id="f-monto" inputmode="decimal" placeholder="0">
+          </label>
+          <label class="field">
+            <span>Tarjeta</span>
+            <select id="f-tar"></select>
+          </label>
+          <label class="field field-wide">
+            <span>Notas <small>(opcional)</small></span>
+            <input type="text" id="f-notas" placeholder="Ej. Costco">
+          </label>
+        </div>
+        <button id="f-guardar" class="btn-primary">Guardar</button>
+      </div>
+
+      <!-- KPIs -->
+      <div class="grid">
+        <div class="kpi"><span id="kpi-ingreso">—</span><small>Ingreso mensual</small></div>
+        <div class="kpi"><span id="kpi-gastado">—</span><small>Total gastado</small></div>
+        <div class="kpi"><span id="kpi-disponible">—</span><small>Disponible</small></div>
+        <div class="kpi"><span id="kpi-pct">—</span><small>% utilizado</small></div>
+        <div class="kpi"><span id="kpi-compras">—</span><small>Compras</small></div>
+        <div class="kpi"><span id="kpi-promcompra">—</span><small>Prom. por compra</small></div>
+        <div class="kpi"><span id="kpi-promdiario">—</span><small>Prom. diario</small></div>
+        <div class="kpi"><span id="kpi-topcat" class="kpi-sm">—</span><small>Mayor gasto</small></div>
+      </div>
+
+      <!-- Resumen por categoría -->
+      <div class="card">
+        <h3 class="card-title">Por categoría</h3>
+        <div id="resumen-body"></div>
+      </div>
+
     </section>
 
     <section id="view-historial" class="view">
@@ -48,6 +98,8 @@
     </section>
 
   </main>
+
+  <div id="toast" class="toast"></div>
 
   <script src="config.js"></script>
   <script src="utils.js"></script>
