@@ -39,13 +39,13 @@
             <span>Fecha</span>
             <input type="date" id="f-fecha">
           </label>
-          <label class="field field-wide">
-            <span>Descripción</span>
-            <input type="text" id="f-desc" placeholder="Ej. Súper semanal">
-          </label>
           <label class="field">
             <span>Categoría</span>
             <select id="f-cat"></select>
+          </label>
+          <label class="field field-wide">
+            <span>Descripción</span>
+            <input type="text" id="f-desc" placeholder="Ej. Súper semanal">
           </label>
           <label class="field">
             <span>Monto</span>
@@ -61,6 +61,11 @@
           </label>
         </div>
         <button id="f-guardar" class="btn-primary">Guardar</button>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Gasto por Categoría</h3>
+        <div id="resumen-body"></div>
       </div>
 
       <div class="grid">
@@ -92,11 +97,6 @@
           <h3 class="card-title">Categorías: mayor a menor gasto</h3>
           <div class="chart-box chart-box-tall"><canvas id="chart-horizontal"></canvas></div>
         </div>
-      </div>
-
-      <div class="card">
-        <h3 class="card-title">Por categoría</h3>
-        <div id="resumen-body"></div>
       </div>
 
     </section>

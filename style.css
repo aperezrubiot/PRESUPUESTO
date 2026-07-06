@@ -275,3 +275,6 @@ input[type="file"] {
 .res-mini-main { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .res-mini-sub { color: var(--muted); font-weight: 400; font-size: .78rem; }
 .res-mini-monto { font-weight: 650; white-space: nowrap; }
+
+/* Forzar 2 columnas fijas solo en el formulario de registrar gasto */
+.form-card .form-grid { grid-template-columns: 1fr 1fr; }
