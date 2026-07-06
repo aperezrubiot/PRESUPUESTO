@@ -28,7 +28,8 @@ function renderStats() {
 
 /* ---- Helpers de fecha ---- */
 function movsDeMes(mes) {
-  return STORE.data.historial.filter(m => monthKey(m.fecha) === mes);
+  return STORE.data.historial.filter(m => m && m.fecha && monthKey(m.fecha) === mes);
+
 }
 function totalDe(movs) {
   return movs.reduce((s, m) => s + toNumber(m.monto), 0);
