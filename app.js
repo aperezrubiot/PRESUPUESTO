@@ -222,8 +222,8 @@ function renderResumen(d) {
       </div>` : '';
 
     return `
-      <div class="res-row">
-        <div class="res-head res-head-click" data-cat-toggle="${escapeHtml(c.nombre)}">
+      <div class="res-row res-row-click" data-cat-toggle="${escapeHtml(c.nombre)}">
+        <div class="res-head">
           <span class="res-cat">${(c.emoji || '')} ${c.nombre}</span>
           <span class="res-nums">${formatMoney(gastado)} <span class="res-sep">/</span> ${formatMoney(presu)}</span>
         </div>
