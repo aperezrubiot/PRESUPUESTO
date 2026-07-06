@@ -9,10 +9,11 @@ async function init() {
     setupTabs();
   setupForm();
   setupHistorial();
-    setupSettings();
-  setupExport();
+     try { setupSettings(); } catch (e) { console.error('setupSettings falló:', e); }
+  try { setupExport(); } catch (e) { console.error('setupExport falló:', e); }
 
   if (loadCache()) render();
+
 
   try {
     status.textContent = 'Conectando…';
