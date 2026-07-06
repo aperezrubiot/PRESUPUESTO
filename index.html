@@ -102,7 +102,44 @@
     </section>
 
     <section id="view-historial" class="view">
-      <p class="placeholder">Aquí irá el historial de movimientos (Etapa 4.5).</p>
+
+      <div class="card filtros-card">
+        <div class="filtros-grid">
+          <label class="field field-wide">
+            <span>Buscar</span>
+            <input type="text" id="h-buscar" placeholder="Descripción o notas…">
+          </label>
+          <label class="field">
+            <span>Categoría</span>
+            <select id="h-cat"><option value="">Todas</option></select>
+          </label>
+          <label class="field">
+            <span>Tarjeta</span>
+            <select id="h-tar"><option value="">Todas</option></select>
+          </label>
+          <label class="field">
+            <span>Desde</span>
+            <input type="date" id="h-desde">
+          </label>
+          <label class="field">
+            <span>Hasta</span>
+            <input type="date" id="h-hasta">
+          </label>
+          <label class="field">
+            <span>Ordenar</span>
+            <select id="h-orden">
+              <option value="fecha-desc">Más reciente</option>
+              <option value="fecha-asc">Más antiguo</option>
+              <option value="monto-desc">Monto mayor</option>
+              <option value="monto-asc">Monto menor</option>
+            </select>
+          </label>
+        </div>
+        <button id="h-limpiar" class="btn-ghost">Limpiar filtros</button>
+      </div>
+
+      <div id="historial-body"></div>
+
     </section>
 
     <section id="view-estadisticas" class="view">
@@ -115,7 +152,7 @@
 
   </main>
 
-  <div id="toast" class="toast"></div>
+    <div id="toast" class="toast"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="config.js"></script>
@@ -126,3 +163,5 @@
   <script src="app.js"></script>
 </body>
 </html>
+
+

@@ -1,11 +1,14 @@
-// app.js — Punto de entrada + lógica del Dashboard.
+// app.js — Punto de entrada + lógica del Dashboard e Historial.
 
 let mesSeleccionado = null;
+let mesesAbiertos = new Set();
+let editandoId = null;
 
 async function init() {
   const status = document.getElementById('status');
   setupTabs();
   setupForm();
+  setupHistorial();
   if (loadCache()) render();
   try {
     status.textContent = 'Conectando…';
@@ -23,6 +26,8 @@ function render() {
   poblarSelectoresFormulario();
   poblarSelectorMes();
   renderDashboard();
+  poblarFiltrosHistorial();
+  renderHistorial();
 }
 
 /* ---------- Navegación ---------- */
@@ -38,7 +43,7 @@ function setupTabs() {
   });
 }
 
-/* ---------- Formulario ---------- */
+/* ---------- Formulario (Dashboard) ---------- */
 function setupForm() {
   const btn = document.getElementById('f-guardar');
   if (btn) btn.addEventListener('click', onGuardar);
@@ -85,6 +90,7 @@ async function onGuardar() {
     mesSeleccionado = monthKey(mov.fecha);
     poblarSelectorMes();
     renderDashboard();
+    renderHistorial();
     toast('Gasto guardado ✅');
   } catch (e) {
     toast('Error: ' + e.message);
@@ -93,7 +99,7 @@ async function onGuardar() {
   }
 }
 
-/* ---------- Selector de mes ---------- */
+/* ---------- Selector de mes (Dashboard) ---------- */
 function poblarSelectorMes() {
   const sel = document.getElementById('mes-selector');
   if (!sel) return;
@@ -103,7 +109,7 @@ function poblarSelectorMes() {
   sel.value = mesSeleccionado;
 }
 
-/* ---------- Cálculos ---------- */
+/* ---------- Cálculos compartidos ---------- */
 function categoriasActivas() {
   return STORE.data.categorias
     .filter(c => String(c.activa).toLowerCase() === 'si')
@@ -201,8 +207,234 @@ function renderResumen(d) {
   }).join('');
 }
 
+/* ================= HISTORIAL ================= */
+
+function setupHistorial() {
+  ['h-buscar', 'h-cat', 'h-tar', 'h-desde', 'h-hasta', 'h-orden'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', renderHistorial);
+  });
+  const limpiar = document.getElementById('h-limpiar');
+  if (limpiar) limpiar.addEventListener('click', () => {
+    document.getElementById('h-buscar').value = '';
+    document.getElementById('h-cat').value = '';
+    document.getElementById('h-tar').value = '';
+    document.getElementById('h-desde').value = '';
+    document.getElementById('h-hasta').value = '';
+    document.getElementById('h-orden').value = 'fecha-desc';
+    renderHistorial();
+  });
+}
+
+function poblarFiltrosHistorial() {
+  const cat = document.getElementById('h-cat');
+  const tar = document.getElementById('h-tar');
+  if (!cat || !tar) return;
+  const cats = categoriasActivas();
+  cat.innerHTML = '<option value="">Todas</option>' +
+    cats.map(c => `<option value="${c.nombre}">${(c.emoji || '')} ${c.nombre}</option>`).join('');
+  const tars = STORE.data.tarjetas.filter(t => String(t.activa).toLowerCase() === 'si');
+  tar.innerHTML = '<option value="">Todas</option>' +
+    tars.map(t => `<option value="${t.nombre}">${t.nombre}</option>`).join('');
+}
+
+function movimientosFiltrados() {
+  const buscar = val('h-buscar').toLowerCase().trim();
+  const cat = val('h-cat');
+  const tar = val('h-tar');
+  const desde = val('h-desde');
+  const hasta = val('h-hasta');
+  const orden = val('h-orden') || 'fecha-desc';
+
+  let movs = STORE.data.historial.filter(m => {
+    if (buscar) {
+      const texto = (String(m.descripcion || '') + ' ' + String(m.notas || '')).toLowerCase();
+      if (!texto.includes(buscar)) return false;
+    }
+    if (cat && m.categoria !== cat) return false;
+    if (tar && m.tarjeta !== tar) return false;
+    if (desde && String(m.fecha).slice(0, 10) < desde) return false;
+    if (hasta && String(m.fecha).slice(0, 10) > hasta) return false;
+    return true;
+  });
+
+  movs.sort((a, b) => {
+    if (orden === 'fecha-asc') return String(a.fecha).localeCompare(String(b.fecha));
+    if (orden === 'monto-desc') return toNumber(b.monto) - toNumber(a.monto);
+    if (orden === 'monto-asc') return toNumber(a.monto) - toNumber(b.monto);
+    return String(b.fecha).localeCompare(String(a.fecha)); // fecha-desc default
+  });
+  return movs;
+}
+
+function renderHistorial() {
+  const cont = document.getElementById('historial-body');
+  if (!cont) return;
+  const movs = movimientosFiltrados();
+
+  if (!movs.length) {
+    cont.innerHTML = '<p class="placeholder">No hay movimientos con estos filtros.</p>';
+    return;
+  }
+
+  const grupos = {};
+  movs.forEach(m => {
+    const k = monthKey(m.fecha);
+    if (!grupos[k]) grupos[k] = [];
+    grupos[k].push(m);
+  });
+  const clavesMes = Object.keys(grupos).sort().reverse();
+
+  if (mesesAbiertos.size === 0) mesesAbiertos.add(clavesMes[0]);
+
+  cont.innerHTML = clavesMes.map(k => {
+    const items = grupos[k];
+    const total = items.reduce((s, m) => s + toNumber(m.monto), 0);
+    const abierto = mesesAbiertos.has(k);
+    return `
+      <div class="mes-group ${abierto ? 'open' : ''}" data-mes="${k}">
+        <div class="mes-header" data-toggle="${k}">
+          <div class="mes-header-left">
+            <span class="mes-caret">▶</span>
+            <span class="mes-title">${monthLabel(k)}</span>
+          </div>
+          <span class="mes-total">${items.length} · ${formatMoney(total)}</span>
+        </div>
+        <div class="mes-body">
+          ${items.map(m => movRowHtml(m)).join('')}
+        </div>
+      </div>`;
+  }).join('');
+
+  // Listeners de acordeón
+  cont.querySelectorAll('[data-toggle]').forEach(h => {
+    h.addEventListener('click', () => {
+      const k = h.dataset.toggle;
+      if (mesesAbiertos.has(k)) mesesAbiertos.delete(k); else mesesAbiertos.add(k);
+      renderHistorial();
+    });
+  });
+
+  // Listeners de acciones
+  cont.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => abrirEdicion(b.dataset.edit)));
+  cont.querySelectorAll('[data-dup]').forEach(b => b.addEventListener('click', () => onDuplicar(b.dataset.dup)));
+  cont.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => onEliminar(b.dataset.del)));
+  cont.querySelectorAll('[data-save]').forEach(b => b.addEventListener('click', () => onGuardarEdicion(b.dataset.save)));
+  cont.querySelectorAll('[data-cancel]').forEach(b => b.addEventListener('click', () => { editandoId = null; renderHistorial(); }));
+}
+
+function movRowHtml(m) {
+  if (editandoId === m.id) return editRowHtml(m);
+  const cat = STORE.data.categorias.find(c => c.nombre === m.categoria);
+  return `
+    <div class="mov-row">
+      <div class="mov-left">
+        <span class="mov-desc">${(cat && cat.emoji) || ''} ${escapeHtml(m.descripcion)}</span>
+        <span class="mov-meta">${formatDate(m.fecha)} · ${escapeHtml(m.categoria || '')} · ${escapeHtml(m.tarjeta || '')}${m.notas ? ' · ' + escapeHtml(m.notas) : ''}</span>
+      </div>
+      <div class="mov-right">
+        <span class="mov-monto">${formatMoney(m.monto)}</span>
+        <div class="mov-actions">
+          <button data-edit="${m.id}" title="Editar">✏️</button>
+          <button data-dup="${m.id}" title="Duplicar">⧉</button>
+          <button class="danger" data-del="${m.id}" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function editRowHtml(m) {
+  const cats = categoriasActivas();
+  const tars = STORE.data.tarjetas.filter(t => String(t.activa).toLowerCase() === 'si');
+  return `
+    <div class="edit-row">
+      <div class="edit-grid">
+        <input type="date" id="e-fecha-${m.id}" value="${String(m.fecha).slice(0,10)}">
+        <input type="text" id="e-desc-${m.id}" value="${escapeHtml(m.descripcion)}" placeholder="Descripción">
+        <select id="e-cat-${m.id}">
+          ${cats.map(c => `<option value="${c.nombre}" ${c.nombre === m.categoria ? 'selected' : ''}>${(c.emoji||'')} ${c.nombre}</option>`).join('')}
+        </select>
+        <input type="number" id="e-monto-${m.id}" value="${toNumber(m.monto)}" inputmode="decimal">
+        <select id="e-tar-${m.id}">
+          ${tars.map(t => `<option value="${t.nombre}" ${t.nombre === m.tarjeta ? 'selected' : ''}>${t.nombre}</option>`).join('')}
+        </select>
+        <input type="text" id="e-notas-${m.id}" value="${escapeHtml(m.notas || '')}" placeholder="Notas">
+      </div>
+      <div class="edit-actions">
+        <button class="btn-secondary" data-cancel="${m.id}">Cancelar</button>
+        <button class="btn-primary" data-save="${m.id}">Guardar cambios</button>
+      </div>
+    </div>`;
+}
+
+function abrirEdicion(id) { editandoId = id; renderHistorial(); }
+
+async function onGuardarEdicion(id) {
+  const mov = {
+    id,
+    fecha:       val(`e-fecha-${id}`),
+    descripcion: val(`e-desc-${id}`).trim(),
+    categoria:   val(`e-cat-${id}`),
+    monto:       toNumber(val(`e-monto-${id}`)),
+    tarjeta:     val(`e-tar-${id}`),
+    notas:       val(`e-notas-${id}`).trim(),
+  };
+  if (!mov.fecha || !mov.descripcion || mov.monto <= 0) {
+    toast('Revisa fecha, descripción y monto.');
+    return;
+  }
+  try {
+    await actualizarMovimiento(mov);
+    const idx = STORE.data.historial.findIndex(m => m.id === id);
+    if (idx > -1) STORE.data.historial[idx] = Object.assign({}, STORE.data.historial[idx], mov);
+    setData(STORE.data);
+    editandoId = null;
+    renderHistorial();
+    renderDashboard();
+    toast('Movimiento actualizado ✅');
+  } catch (e) {
+    toast('Error: ' + e.message);
+  }
+}
+
+async function onDuplicar(id) {
+  try {
+    const res = await duplicarMovimiento(id);
+    STORE.data.historial.push(res.movimiento);
+    setData(STORE.data);
+    renderHistorial();
+    renderDashboard();
+    toast('Movimiento duplicado ✅');
+  } catch (e) {
+    toast('Error: ' + e.message);
+  }
+}
+
+async function onEliminar(id) {
+  const mov = STORE.data.historial.find(m => m.id === id);
+  const nombre = mov ? mov.descripcion : 'este movimiento';
+  const ok = confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`);
+  if (!ok) return;
+  try {
+    await eliminarMovimiento(id);
+    STORE.data.historial = STORE.data.historial.filter(m => m.id !== id);
+    setData(STORE.data);
+    renderHistorial();
+    renderDashboard();
+    toast('Movimiento eliminado');
+  } catch (e) {
+    toast('Error: ' + e.message);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
 /* ---------- Helpers de UI ---------- */
-function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
 function val(id) { const el = document.getElementById(id); return el ? el.value : ''; }
 
 let toastTimer = null;
